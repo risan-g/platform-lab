@@ -49,3 +49,8 @@ def db():
     conn.close()
 
     return jsonify(database=database, postgres=version)
+
+@app.get("/version")
+def version():
+    return jsonify(version="v1")
+
