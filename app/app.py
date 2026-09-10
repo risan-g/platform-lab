@@ -15,8 +15,25 @@ def live():
 
 @app.get("/health/ready")
 def ready():
-    return jsonify(status="deliberately_unhealthy"), 503
+    try:
+        conn = psycopg.connect(
+            host=os.environ["DB_HOST"],
+            dbname=os.environ["POSTGRES_DB"],
+            user=os.environ["POSTGRES_USER"],
+            password=os.environ["POSTGRES_PASSWORD"],
+            connect_timeout=2,
+        )
 
+        with conn.cursor() as cur:
+            cur.execute("SELECT 1;")
+            cur.fetchone()
+
+        conn.close()
+
+        return jsonify(status="ready"), 200
+
+    except Exception:
+        return jsonify(status="not_ready"), 503
 
 @app.get("/db")
 def db():
