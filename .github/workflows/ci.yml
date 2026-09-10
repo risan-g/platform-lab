@@ -49,3 +49,40 @@ jobs:
           context: ./app
           push: false
           tags: platform-lab-api:ci
+
+  publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs:
+      - test
+      - docker-build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Calculate image name
+        id: image
+        shell: bash
+        run: |
+          OWNER="$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')"
+          echo "name=ghcr.io/${OWNER}/platform-lab-api" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GitHub Container Registry
+        shell: bash
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" |             docker login ghcr.io               --username "${{ github.actor }}"               --password-stdin
+
+      - name: Build image
+        run: |
+          docker build             -t "${{ steps.image.outputs.name }}:${{ github.sha }}"             -t "${{ steps.image.outputs.name }}:main"             ./app
+
+      - name: Push immutable image
+        run: docker push "${{ steps.image.outputs.name }}:${{ github.sha }}"
+
+      - name: Push main image
+        run: docker push "${{ steps.image.outputs.name }}:main"
