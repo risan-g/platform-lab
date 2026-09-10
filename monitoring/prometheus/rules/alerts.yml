@@ -1,0 +1,11 @@
+groups:
+  - name: platform-alerts
+    rules:
+      - alert: PostgreSQLDown
+        expr: pg_up == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL is unavailable"
+          description: "The PostgreSQL exporter cannot connect to the database."
