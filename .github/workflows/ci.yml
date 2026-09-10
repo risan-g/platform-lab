@@ -33,6 +33,44 @@ jobs:
         working-directory: app
         run: pytest -v
 
+  dependency-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Install pip-audit
+        run: python -m pip install pip-audit
+
+      - name: Audit Python dependencies
+        run: pip-audit -r app/requirements.txt
+
+  image-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Build image for scanning
+        run: docker build -t platform-lab-api:scan ./app
+
+      - name: Scan image for HIGH and CRITICAL vulnerabilities
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: platform-lab-api:scan
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "HIGH,CRITICAL"
+
   docker-build:
     runs-on: ubuntu-latest
 
@@ -54,6 +92,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs:
       - test
+      - dependency-scan
+      - image-scan
       - docker-build
     runs-on: ubuntu-latest
 
