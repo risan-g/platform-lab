@@ -1,0 +1,13 @@
+# False positives from pip vendored SBOM metadata.
+# Runtime image verified manually:
+#   msgpack 1.2.2
+#   setuptools 84.0.0
+#
+# Trivy reports pip's bundled metadata as:
+#   msgpack 1.1.2
+#   setuptools 70.3.0
+#
+# Remove these suppressions when upstream pip/Trivy metadata no longer reports them.
+
+GHSA-6v7p-g79w-8964
+CVE-2025-47273

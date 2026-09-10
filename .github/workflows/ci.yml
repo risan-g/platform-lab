@@ -70,6 +70,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: "os,library"
           severity: "HIGH,CRITICAL"
+          trivyignores: .trivyignore
 
   docker-build:
     runs-on: ubuntu-latest
