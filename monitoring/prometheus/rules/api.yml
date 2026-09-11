@@ -1,0 +1,49 @@
+groups:
+  - name: api-slo
+    rules:
+      - alert: APIUnavailable
+        expr: up{job="api"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Platform API is unavailable"
+          description: "Prometheus cannot scrape the API metrics endpoint."
+
+      - alert: APIReadinessLost
+        expr: platform_readiness == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Platform API readiness is failing"
+          description: "The API is alive but cannot satisfy readiness checks."
+
+      - alert: APIHighErrorRate
+        expr: |
+          (
+            sum(rate(platform_http_requests_total{status=~"5.."}[5m]))
+            /
+            clamp_min(sum(rate(platform_http_requests_total[5m])), 0.001)
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Platform API 5xx rate is above 5%"
+          description: "More than 5% of API requests are returning server errors."
+
+      - alert: APIHighP95Latency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (
+              rate(platform_http_request_duration_seconds_bucket[5m])
+            )
+          ) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Platform API p95 latency is above 500ms"
+          description: "The API p95 request latency has exceeded 500ms."
