@@ -1,0 +1,12 @@
+[Unit]
+Description=Platform Lab PostgreSQL backup
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=dutch
+WorkingDirectory=/home/dutch/platform-lab
+ExecStart=/home/dutch/platform-lab/scripts/backup-db.sh
+TimeoutStartSec=300

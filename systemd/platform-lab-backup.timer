@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Platform Lab PostgreSQL backup
+
+[Timer]
+OnCalendar=*-*-* 03:15:00
+RandomizedDelaySec=10m
+Persistent=true
+Unit=platform-lab-backup.service
+
+[Install]
+WantedBy=timers.target
