@@ -1,0 +1,15 @@
+[Unit]
+Description=Platform Lab pull-based deployment check
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=dutch
+WorkingDirectory=/home/dutch/platform-lab
+ExecStart=/home/dutch/platform-lab/scripts/check-deploy.sh
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target
