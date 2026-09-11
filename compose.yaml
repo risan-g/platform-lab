@@ -29,6 +29,13 @@ services:
       - backend
       - edge
       - monitoring
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
 
   caddy:
     image: caddy:2.11.4-alpine
