@@ -1,0 +1,10 @@
+---
+- name: Configure platform lab host
+  hosts: homelab
+  become: true
+
+  roles:
+    - common
+    - security
+    - docker
+    - platform

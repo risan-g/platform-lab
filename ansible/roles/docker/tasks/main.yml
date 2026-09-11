@@ -1,0 +1,16 @@
+---
+- name: Check Docker binary
+  ansible.builtin.command: docker --version
+  register: docker_version
+  changed_when: false
+
+- name: Check Docker Compose plugin
+  ansible.builtin.command: docker compose version
+  register: docker_compose_version
+  changed_when: false
+
+- name: Ensure platform user is in docker group
+  ansible.builtin.user:
+    name: dutch
+    groups: docker
+    append: true

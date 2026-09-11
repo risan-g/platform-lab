@@ -1,0 +1,20 @@
+---
+- name: Install baseline packages
+  ansible.builtin.apt:
+    name:
+      - curl
+      - ca-certificates
+      - git
+      - vim
+      - openssh-server
+      - ufw
+      - python3
+      - python3-pip
+    state: present
+    update_cache: true
+
+- name: Ensure SSH service is enabled
+  ansible.builtin.service:
+    name: ssh
+    enabled: true
+    state: started

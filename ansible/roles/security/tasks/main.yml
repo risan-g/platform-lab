@@ -1,0 +1,31 @@
+---
+- name: Install SSH hardening configuration
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/99-homelab-hardening.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      PasswordAuthentication no
+      PermitRootLogin no
+      PubkeyAuthentication yes
+  notify: restart ssh
+
+- name: Allow OpenSSH through UFW
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: Set default incoming policy
+  community.general.ufw:
+    direction: incoming
+    policy: deny
+
+- name: Set default outgoing policy
+  community.general.ufw:
+    direction: outgoing
+    policy: allow
+
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled

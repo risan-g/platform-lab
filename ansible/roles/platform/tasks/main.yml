@@ -1,0 +1,58 @@
+---
+- name: Ensure platform repository directory exists
+  ansible.builtin.file:
+    path: /home/dutch/platform-lab
+    state: directory
+    owner: dutch
+    group: dutch
+    mode: "0755"
+
+- name: Install pull-based deployment systemd service
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../systemd/platform-lab-deploy.service"
+    dest: /etc/systemd/system/platform-lab-deploy.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+
+- name: Install pull-based deployment timer
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../systemd/platform-lab-deploy.timer"
+    dest: /etc/systemd/system/platform-lab-deploy.timer
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+
+- name: Install database backup systemd service
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../systemd/platform-lab-backup.service"
+    dest: /etc/systemd/system/platform-lab-backup.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+
+- name: Install database backup timer
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../systemd/platform-lab-backup.timer"
+    dest: /etc/systemd/system/platform-lab-backup.timer
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+
+- name: Enable deployment timer
+  ansible.builtin.systemd:
+    name: platform-lab-deploy.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Enable backup timer
+  ansible.builtin.systemd:
+    name: platform-lab-backup.timer
+    enabled: true
+    state: started
+    daemon_reload: true
