@@ -28,6 +28,7 @@ services:
     networks:
       - backend
       - edge
+      - monitoring
 
   caddy:
     image: caddy:2.11.4-alpine

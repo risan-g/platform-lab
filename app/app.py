@@ -42,7 +42,7 @@ app.wsgi_app = DispatcherMiddleware(
 
 def database_connection():
     return psycopg.connect(
-        host=os.environ["POSTGRES_HOST"],
+        host=os.environ.get("DB_HOST", os.environ.get("POSTGRES_HOST", "db")),
         port=os.environ.get("POSTGRES_PORT", "5432"),
         dbname=os.environ["POSTGRES_DB"],
         user=os.environ["POSTGRES_USER"],
