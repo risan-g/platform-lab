@@ -75,6 +75,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "backups" {
 
     filter {}
 
+    expiration {
+      days = 90
+    }
+
     noncurrent_version_expiration {
       noncurrent_days = 30
     }
