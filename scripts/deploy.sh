@@ -60,7 +60,7 @@ PY
 
 wait_for_readiness() {
   for attempt in $(seq 1 20); do
-    if curl -fsS http://127.0.0.1:8000/health/ready >/dev/null; then
+    if curl -fsS http://127.0.0.1:80/health/ready >/dev/null; then
       return 0
     fi
 

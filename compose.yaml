@@ -27,8 +27,22 @@ services:
         condition: service_healthy
     networks:
       - backend
+      - edge
+
+  caddy:
+    image: caddy:2.11.4-alpine
+    depends_on:
+      - api
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - edge
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:80:80"
+      - "192.168.1.169:80:80"
+    restart: unless-stopped
 
   node-exporter:
     image: prom/node-exporter:v1.9.1
@@ -94,8 +108,12 @@ volumes:
   postgres_data:
   prometheus_data:
   grafana_data:
+  caddy_data:
+  caddy_config:
 
 networks:
+  edge:
+    driver: bridge
   backend:
     driver: bridge
   monitoring:
