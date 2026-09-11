@@ -9,4 +9,5 @@ Type=oneshot
 User=dutch
 WorkingDirectory=/home/dutch/platform-lab
 ExecStart=/home/dutch/platform-lab/scripts/backup-db.sh
+ExecStart=/home/dutch/platform-lab/scripts/upload-backup-s3.sh
 TimeoutStartSec=300
