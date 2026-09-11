@@ -3,7 +3,7 @@ Description=Periodically check for approved Platform Lab releases
 
 [Timer]
 OnBootSec=2min
-OnUnitActiveSec=2min
+OnUnitInactiveSec=2min
 RandomizedDelaySec=15
 Persistent=true
 
