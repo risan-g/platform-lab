@@ -1,8 +1,9 @@
 [Unit]
 Description=Platform Lab PostgreSQL backup
 Wants=network-online.target
-After=network-online.target docker.service
+After=network-online.target docker.service platform-lab.service
 Requires=docker.service
+Requires=platform-lab.service
 
 [Service]
 Type=oneshot

@@ -2,10 +2,10 @@
 Description=Periodically check for approved Platform Lab releases
 
 [Timer]
-OnBootSec=2min
-OnUnitInactiveSec=2min
+OnCalendar=*:0/2
 RandomizedDelaySec=15
 Persistent=true
+Unit=platform-lab-deploy.service
 
 [Install]
 WantedBy=timers.target
