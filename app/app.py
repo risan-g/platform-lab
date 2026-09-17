@@ -3,7 +3,7 @@ import time
 
 import psycopg
 from flask import Flask, g, jsonify, request
-from prometheus_client import Counter, Gauge, Histogram, make_wsgi_app
+from prometheus_client import Counter, Histogram, make_wsgi_app
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 app = Flask(__name__)
@@ -19,11 +19,6 @@ HTTP_REQUEST_DURATION = Histogram(
     "HTTP request duration in seconds",
     ["method", "endpoint"],
     buckets=(0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0),
-)
-
-READINESS = Gauge(
-    "platform_readiness",
-    "Whether the application is currently ready to serve traffic",
 )
 
 DATABASE_CHECKS = Counter(
@@ -97,13 +92,11 @@ def readiness():
                 cur.execute("SELECT 1")
                 cur.fetchone()
 
-        READINESS.set(1)
         DATABASE_CHECKS.labels(result="success").inc()
 
         return jsonify(status="ready")
 
     except Exception:
-        READINESS.set(0)
         DATABASE_CHECKS.labels(result="failure").inc()
 
         return jsonify(status="not ready"), 503

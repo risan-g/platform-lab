@@ -98,7 +98,7 @@
       },
       "targets": [
         {
-          "expr": "platform_readiness",
+          "expr": "probe_success{job=\"api-readiness\"}",
           "refId": "A"
         }
       ],
